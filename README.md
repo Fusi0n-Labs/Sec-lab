@@ -7,7 +7,7 @@ listes de mots, payloads, outils, guides, writeups et labs.
 
 ---
 
-## Structure
+### Structure
 
 Les ressources sont importées directement **à la racine** pour garder une organisation claire et simple.  
 Chaque dossier correspond à un projet ou un ensemble d’outils, contenant :
@@ -16,7 +16,7 @@ Chaque dossier correspond à un projet ou un ensemble d’outils, contenant :
 
 ---
 
-## Règles d’usage
+### Règles d’usage
 
 - 🔒 Utiliser uniquement sur des environnements **autorisés**.  
 - ❌ Ne jamais committer de **secrets** (mots de passe, clés privées, tokens).  
@@ -25,7 +25,7 @@ Chaque dossier correspond à un projet ou un ensemble d’outils, contenant :
 
 ---
 
-## Mises à jour
+### Mises à jour
 
 Deux approches possibles :
 
