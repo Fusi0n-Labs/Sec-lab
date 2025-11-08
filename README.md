@@ -25,19 +25,18 @@ Chaque dossier correspond à un projet ou un ensemble d’outils, contenant :
 
 ---
 
-### ⚖️ Clause de non-responsabilité
+### ⚠️ Clause de non-responsabilité ⚠️
 
-> Ce dépôt est fourni **à des fins éducatives, de recherche et de tests autorisés uniquement**.  
->
-> L’auteur et les contributeurs de ce projet **déclinent toute responsabilité légale, civile ou pénale** concernant :
-> - l’usage abusif, illégal ou non autorisé des outils ou ressources présents dans ce dépôt,  
-> - les dommages directs ou indirects résultant de leur utilisation,  
-> - toute activité contraire aux lois en vigueur.  
->
-> En clonant, téléchargeant ou utilisant ce dépôt, **vous acceptez l’entière responsabilité** de vos actions et vous engagez à respecter les réglementations en matière de cybersécurité, notamment le **Code pénal français (articles 323-1 à 323-7)** sur l’accès et le maintien frauduleux dans un système de traitement automatisé de données.  
->
-> Ce projet n’est **pas affilié, soutenu ni approuvé** par les éditeurs ou organisations dont les outils sont référencés.  
-> Aucune garantie de bon fonctionnement, d’exactitude ou de sécurité n’est fournie.
+Ce dépôt est fourni **à des fins éducatives, de recherche et de tests autorisés uniquement**.  
+L’auteur et les contributeurs de ce projet **déclinent toute responsabilité légale, civile ou pénale** concernant :
+- l’usage abusif, illégal ou non autorisé des outils ou ressources présents dans ce dépôt,  
+- les dommages directs ou indirects résultant de leur utilisation,  
+- toute activité contraire aux lois en vigueur.  
+
+En clonant, téléchargeant ou utilisant ce dépôt, **vous acceptez l’entière responsabilité** de vos actions et vous engagez à respecter les réglementations en matière de cybersécurité, notamment le **Code pénal français (articles 323-1 à 323-7)** sur l’accès et le maintien frauduleux dans un système de traitement automatisé de données.  
+
+Ce projet n’est **pas affilié, soutenu ni approuvé** par les éditeurs ou organisations dont les outils sont référencés.  
+Aucune garantie de bon fonctionnement, d’exactitude ou de sécurité n’est fournie.
 
 ---
 
