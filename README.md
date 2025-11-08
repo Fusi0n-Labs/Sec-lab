@@ -1,4 +1,4 @@
-# 🔐 Sec-lab — Fusi0n Labs
+# 🔐 Sec-lab
 
 Collection simple et organisée de ressources pour l’audit web, le hardening et la formation :  
 listes de mots, payloads, outils, guides, writeups et labs.
