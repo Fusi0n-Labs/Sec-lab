@@ -1,0 +1,153 @@
+name: Sync security mirrors (root)
+
+on:
+  workflow_dispatch: {}       # lancement manuel
+  schedule:
+    - cron: "0 3 * * 1"       # (optionnel) tous les lundis à 03h00 UTC
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-mirrors
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    if: github.repository_owner == 'Fusi0n-Labs'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync multiple sources to repo root
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          SOURCES=(
+            # === Pentest / Offensive Security ===
+            "https://github.com/danielmiessler/SecLists.git                   SecLists"
+            "https://github.com/swisskyrepo/PayloadsAllTheThings.git          PayloadsAllTheThings"
+            "https://github.com/carlospolop/PEASS-ng.git                      PEASS-ng"
+            "https://github.com/PowerShellMafia/PowerSploit.git               PowerSploit"
+            "https://github.com/Proviesec/google-dorks.git                    google-dorks"
+            "https://github.com/byt3bl33d3r/CrackMapExec.git                  CrackMapExec"
+            "https://github.com/A-poc/RedTeam-Tools.git                       RedTeam-Tools"
+            "https://github.com/The-Art-of-Hacking/h4cker.git                 h4cker"
+            "https://github.com/pentestmonkey/php-reverse-shell.git           php-reverse-shell"
+            "https://github.com/Mebus/cupp.git                                cupp"
+            "https://github.com/0xffsec/webdojo.git                           webdojo-0xffsec"
+            "https://github.com/R3dy/capsulecorp-pentest.git                  capsulecorp-pentest"
+            "https://github.com/bst04/CyberSources.git                        CyberSources"
+            "https://github.com/HunxByts/GhostTrack.git                       GhostTrack"
+
+            # === Blue Team / Hardening / Défense ===
+            "https://github.com/wazuh/wazuh.git                               wazuh"
+            "https://github.com/OISF/suricata.git                             suricata"
+            "https://github.com/HotCakeX/Harden-Windows-Security.git          Harden-Windows-Security"
+            "https://github.com/decalage2/awesome-security-hardening.git      awesome-security-hardening"
+            "https://github.com/undergroundwires/privacy.sexy.git             privacy.sexy"
+
+            # === Awesome Lists / Références techniques ===
+            "https://github.com/coreb1t/awesome-pentest.git                   awesome-pentest"
+            "https://github.com/OWASP/CheatSheetSeries.git                    OWASP-CheatSheetSeries"
+            "https://github.com/paragonie/awesome-appsec.git                  awesome-appsec"
+            "https://github.com/redhuntlabs/Awesome-Asset-Discovery.git       Awesome-Asset-Discovery"
+            "https://github.com/apsdehal/awesome-ctf.git                      awesome-ctf"
+            "https://github.com/joe-shenouda/awesome-cyber-skills.git         awesome-cyber-skills"
+            "https://github.com/devsecops/awesome-devsecops.git               awesome-devsecops"
+            "https://github.com/fkie-cad/awesome-embedded-and-iot-security.git awesome-embedded-and-iot-security"
+            "https://github.com/FabioBaroni/awesome-exploit-development.git   awesome-exploit-development"
+            "https://github.com/lirantal/awesome-nodejs-security.git          awesome-nodejs-security"
+            "https://github.com/0xsyr0/Awesome-Cybersecurity-Handbooks.git    Awesome-Cybersecurity-Handbooks"
+            "https://github.com/brootware/awesome-cyber-security-university.git awesome-cyber-security-university"
+            "https://github.com/4ndersonLin/awesome-cloud-security.git        awesome-cloud-security"
+            "https://github.com/jaredthecoder/awesome-vehicle-security.git    awesome-vehicle-security"
+
+            # === Formation / Roadmaps / Éducation ===
+            "https://github.com/farhanashrafdev/90DaysOfCyberSecurity.git     90DaysOfCyberSecurity"
+            "https://github.com/Hamed233/Cybersecurity-Mastery-Roadmap.git    Cybersecurity-Mastery-Roadmap"
+            "https://github.com/Hacking-Notes/Hacker-Roadmap.git              Hacker-Roadmap"
+            "https://github.com/Berkanktk/CyberSecurity.git                   CyberSecurity"
+            "https://github.com/Jieyab89/OSINT-Cheat-sheet.git                OSINT-Cheat-sheet"
+            "https://github.com/0xrajneesh/Ethical-Hacking-Projects-for-beginners.git Ethical-Hacking-Projects-for-beginners"
+            "https://github.com/the-akira/Computer-Science-Resources.git      Computer-Science-Resources"
+            "https://github.com/eMVee-NL/MindMap.git                          MindMap-eMVee"
+
+            # === Cloud / Infra / DevSecOps ===
+            "https://github.com/Azure/azure-quickstart-templates.git          azure-quickstart-templates"
+            "https://github.com/yeyintminthuhtut/Awesome-Red-Teaming.git      Awesome-Red-Teaming"
+
+            # === Divers / Checklists ===
+            "https://github.com/Lissy93/personal-security-checklist.git       personal-security-checklist"
+            "https://github.com/Lissy93/web-check.git                         web-check"
+            "https://github.com/Ignitetechnologies.git                        Ignitetechnologies-org" # organisation, skip
+          )
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          changed=0
+
+          detect_branch () {
+            local url="$1"
+            if git ls-remote --heads "$url" main &>/dev/null;   then echo "main";   return; fi
+            if git ls-remote --heads "$url" master &>/dev/null; then echo "master"; return; fi
+            local def
+            def=$(git ls-remote --symref "$url" HEAD 2>/dev/null | awk '/^ref:/ {print $2}' | sed 's|refs/heads/||')
+            if [ -n "${def:-}" ]; then echo "$def"; else echo ""; fi
+          }
+
+          for entry in "${SOURCES[@]}"; do
+            URL=$(echo "$entry" | awk '{print $1}')
+            DEST=$(echo "$entry" | awk '{print $2}')
+
+            echo "==> Sync $DEST from $URL"
+
+            if ! git ls-remote "$URL" &>/dev/null; then
+              echo "   ⚠️  Skip: URL invalide ou inaccessible ($URL)"
+              continue
+            fi
+
+            BRANCH="$(detect_branch "$URL")"
+            if [ -z "$BRANCH" ]; then
+              echo "   ⚠️  Skip: impossible de déterminer la branche par défaut ($URL)"
+              continue
+            fi
+
+            echo "   Using branch: $BRANCH"
+
+            rm -rf "$DEST" tmp_upstream || true
+            git clone --depth 1 --branch "$BRANCH" "$URL" tmp_upstream
+
+            mkdir -p "$DEST"
+            rsync -a --delete --exclude='.git' tmp_upstream/ "$DEST/"
+            rm -rf tmp_upstream
+
+            # Création auto du README si absent
+            if [ ! -f "$DEST/README.md" ]; then
+              cat > "$DEST/README.md" <<EOF
+# $DEST (mirror)
+
+Source : $URL  
+Branche : $BRANCH  
+Mise à jour : workflow \`.github/workflows/sync-mirrors.yml\`  
+Usage : **éthique uniquement** (audit autorisé, formation, recherche).  
+Licence : voir le dépôt source.
+EOF
+            fi
+
+            if ! git diff --quiet -- "$DEST"; then
+              git add "$DEST"
+              git commit -m "chore(sync): update $DEST from $URL ($BRANCH)" || true
+              changed=1
+            else
+              echo "   No changes for $DEST"
+            fi
+          done
+
+          if [ "$changed" -eq 1 ]; then
+            git push
+          else
+            echo "No updates to push."
+          fi
