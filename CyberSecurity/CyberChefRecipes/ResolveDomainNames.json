@@ -1,0 +1,8 @@
+[
+    { "op": "Fork",
+      "args": ["\\n", "", true] },
+    { "op": "DNS over HTTPS",
+      "args": ["https://dns.google.com/resolve", "A", true, false] },
+    { "op": "Extract IP addresses",
+      "args": [true, false, false, false] }
+]
