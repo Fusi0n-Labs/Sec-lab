@@ -1,0 +1,30 @@
+---
+- hosts: all
+  become: yes
+
+  roles:
+    - geerlingguy.docker
+
+  tasks:
+    - name: Add Vagrant user to Docker group
+      user:
+        name: vagrant
+        groups: docker
+        append: yes
+
+    - name: Install packages.
+      package:
+        name:
+          - python3-pip
+        update_cache: yes
+        state: present
+
+    - name: Install Python modules.
+      pip:
+        name:
+          - docker
+          - docker-compose
+        executable: pip3
+
+    - name: Create and start services.
+      command: /usr/local/bin/docker-compose --project-directory .. up -d
