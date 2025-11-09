@@ -10,8 +10,14 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout (with token, full history)
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Ensure rsync
+        run: sudo apt-get update && sudo apt-get install -y rsync
 
       - name: Sync sources
         shell: bash
@@ -71,35 +77,20 @@ jobs:
 
           detect_branch () {
             local url="$1"
-
-            # 1) Branche par défaut déclarée par le remote
             local def
             def=$(git ls-remote --symref "$url" HEAD 2>/dev/null | awk '/^ref:/ {print $2}' | sed 's|refs/heads/||')
-
-            if [ -n "${def:-}" ]; then
-              echo "$def"
-              return
-            fi
-
-            # 2) Tester explicitement l’existence de 'main' / 'master' en vérifiant la SORTIE
-            if git ls-remote --heads "$url" main 2>/dev/null | grep -q 'refs/heads/main'; then
-              echo "main"
-              return
-            fi
-            if git ls-remote --heads "$url" master 2>/dev/null | grep -q 'refs/heads/master'; then
-              echo "master"
-              return
-            fi
-
-            # 3) Sinon, échouer proprement
+            if [ -n "${def:-}" ]; then echo "$def"; return; fi
+            if git ls-remote --heads "$url" main 2>/dev/null | grep -q 'refs/heads/main';   then echo "main";   return; fi
+            if git ls-remote --heads "$url" master 2>/dev/null | grep -q 'refs/heads/master'; then echo "master"; return; fi
             echo ""
           }
 
-          changed=0
+          changed_any=0
 
           for entry in "${SOURCES[@]}"; do
             URL=$(echo "$entry" | awk '{print $1}')
             DEST=$(echo "$entry" | awk '{print $2}')
+            echo "----------------------------------------"
             echo "==> $DEST from $URL"
 
             if ! git ls-remote "$URL" >/dev/null 2>&1; then
@@ -121,16 +112,32 @@ jobs:
             rsync -a --delete --exclude='.git' tmp_upstream/ "$DEST/"
             rm -rf tmp_upstream
 
+            # Ajoute un marqueur et un README pour garantir un diff
+            echo "$URL ($BRANCH)" > "$DEST/.mirror-source"
+            if [ ! -f "$DEST/README.md" ]; then
+              {
+                echo "# $DEST (mirror)"
+                echo
+                echo "Source : $URL"
+                echo "Branche : $BRANCH"
+                echo "Mise à jour : workflow .github/workflows/sync-mirrors.yml"
+                echo "Usage : éthique uniquement (audit autorisé, formation, recherche)."
+                echo "Licence : voir le dépôt source."
+              } > "$DEST/README.md"
+            fi
+
             if ! git diff --quiet -- "$DEST"; then
-              git add "$DEST"
+              echo "Committing changes for $DEST..."
+              git add -A "$DEST"
               git commit -m "chore(sync): update $DEST from $URL ($BRANCH)" || true
-              changed=1
+              changed_any=1
             else
               echo "No changes for $DEST"
             fi
           done
 
-          if [ "$changed" -eq 1 ]; then
+          if [ "$changed_any" -eq 1 ]; then
+            echo "Pushing all changes..."
             git push
           else
             echo "No updates to push."
