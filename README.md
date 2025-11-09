@@ -37,25 +37,3 @@ En clonant, téléchargeant ou utilisant ce dépôt, **vous acceptez l’entièr
 
 Ce projet n’est **pas affilié, soutenu ni approuvé** par les éditeurs ou organisations dont les outils sont référencés.  
 Aucune garantie de bon fonctionnement, d’exactitude ou de sécurité n’est fournie.
-
----
-
-### 🔄 Mises à jour
-
-Deux approches possibles :
-
-- **Manuelle** : remplacer le dossier par un nouveau snapshot depuis la source.  
-- **Automatique** : via un workflow GitHub Actions (ex. `.github/workflows/sync-external-sources.yml`) qui met à jour les ressources.
-
----
-
-### 🧾 Exemple de `README.md` pour un dossier importé
-
-```md
-# <NomDuDossier> (mirror)
-Source : <URL du dépôt d’origine>  
-Licence : voir dépôt source  
-Usage : éthique uniquement (audit autorisé, formation, recherche).  
-
-> Ce miroir est fourni à titre éducatif uniquement.  
-> L’auteur décline toute responsabilité en cas d’usage illégal ou non autorisé.
