@@ -1,0 +1,36 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "brootware",
+      "name": "Oaker Min",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7734956?v=4",
+      "profile": "https://brootware.github.io",
+      "contributions": [
+        "infra",
+        "maintenance",
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "IAmCoder",
+      "name": "Michael Paul Coder",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1631870?v=4",
+      "profile": "https://lucidcode.com",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "cyber-security-university",
+  "projectOwner": "brootware",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

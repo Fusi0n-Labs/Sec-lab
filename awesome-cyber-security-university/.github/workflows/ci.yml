@@ -1,0 +1,50 @@
+---
+name: "CI"
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [main]
+  schedule:
+  # Run everyday at 9:00 AM (See https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07)
+  - cron: "0 9 * * *"
+
+env:
+  DISABLE_TELEMETRY: 1
+
+jobs:
+  markdown-link-check:
+    name: Broken Links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Run link check
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          config-file: ".mlc_config.json"
+
+  awesome-lint:
+    name: Awesome Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - run: npx awesome-lint
+
+  # markdown-lint:
+  #   name: Markdown Lint
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #         submodules: recursive
+
+  #     - uses: articulate/actions-markdownlint@v1.1.0
+  #       with:
+  #         # markdownlint config file
+  #         config: ".markdownlint.json"
