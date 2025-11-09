@@ -71,11 +71,28 @@ jobs:
 
           detect_branch () {
             local url="$1"
-            if git ls-remote --heads "$url" main >/dev/null 2>&1; then echo "main"; return; fi
-            if git ls-remote --heads "$url" master >/dev/null 2>&1; then echo "master"; return; fi
+
+            # 1) Branche par défaut déclarée par le remote
             local def
             def=$(git ls-remote --symref "$url" HEAD 2>/dev/null | awk '/^ref:/ {print $2}' | sed 's|refs/heads/||')
-            if [ -n "${def:-}" ]; then echo "$def"; else echo ""; fi
+
+            if [ -n "${def:-}" ]; then
+              echo "$def"
+              return
+            fi
+
+            # 2) Tester explicitement l’existence de 'main' / 'master' en vérifiant la SORTIE
+            if git ls-remote --heads "$url" main 2>/dev/null | grep -q 'refs/heads/main'; then
+              echo "main"
+              return
+            fi
+            if git ls-remote --heads "$url" master 2>/dev/null | grep -q 'refs/heads/master'; then
+              echo "master"
+              return
+            fi
+
+            # 3) Sinon, échouer proprement
+            echo ""
           }
 
           changed=0
@@ -103,19 +120,6 @@ jobs:
             mkdir -p "$DEST"
             rsync -a --delete --exclude='.git' tmp_upstream/ "$DEST/"
             rm -rf tmp_upstream
-
-            # README auto (sans heredoc)
-            if [ ! -f "$DEST/README.md" ]; then
-              {
-                echo "# $DEST (mirror)"
-                echo
-                echo "Source : $URL"
-                echo "Branche : $BRANCH"
-                echo "Mise à jour : workflow .github/workflows/sync-mirrors.yml"
-                echo "Usage : **éthique uniquement** (audit autorisé, formation, recherche)."
-                echo "Licence : voir le dépôt source."
-              } > "$DEST/README.md"
-            fi
 
             if ! git diff --quiet -- "$DEST"; then
               git add "$DEST"
