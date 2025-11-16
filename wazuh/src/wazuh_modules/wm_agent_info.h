@@ -23,6 +23,7 @@
 typedef struct wm_agent_info_sync_flags_t
 {
     unsigned int enable_synchronization : 1;
+    uint32_t sync_end_delay;
     uint32_t sync_response_timeout;
     uint32_t sync_retries;
     long sync_max_eps;
@@ -30,8 +31,9 @@ typedef struct wm_agent_info_sync_flags_t
 
 typedef struct wm_agent_info_t
 {
-    bool is_agent; // True if the module is running on an agent, false if on a manager
-    int interval; // Update interval in seconds
+    bool is_agent;       // True if the module is running on an agent, false if on a manager
+    int interval;        // Update interval in seconds (for delta updates)
+    int integrity_interval; // Integrity check interval in seconds (for full metadata/groups verification), default 86400 (24h)
     wm_agent_info_sync_flags_t sync;
 } wm_agent_info_t;
 

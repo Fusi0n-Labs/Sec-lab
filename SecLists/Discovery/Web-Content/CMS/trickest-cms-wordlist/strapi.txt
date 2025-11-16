@@ -318,6 +318,7 @@ tests/e2e/tests/content-manager/edit-view/collection-type-edit-view.spec.ts
 tests/e2e/tests/content-manager/edit-view/single-type-edit-view.spec.ts
 tests/e2e/tests/content-manager/edit-view/collection-type-edit-view-errors.spec.ts
 tests/e2e/tests/content-manager/listview.spec.ts
+tests/e2e/tests/content-manager/bulk-actions.spec.ts
 tests/e2e/tests/content-manager/blocks.spec.ts
 tests/e2e/tests/content-manager/conditional-fields/boolean-conditional-text-field-visibility.spec.ts
 tests/e2e/tests/content-manager/conditional-fields/boolean-conditional-many-to-many-relation-visibility.spec.ts
@@ -363,6 +364,8 @@ tests/e2e/tests/settings/smoke-test.spec.ts
 tests/e2e/tests/review-workflows/home.spec.ts
 tests/e2e/tests/review-workflows/settings.spec.ts
 tests/e2e/tests/review-workflows/content-manager.spec.ts
+tests/e2e/tests/i18n/localized-fields.spec.ts
+tests/e2e/tests/i18n/bulk-locale-modal.spec.ts
 tests/e2e/tests/i18n/create-edit.spec.ts
 tests/e2e/tests/i18n/listview.spec.ts
 tests/e2e/tests/i18n/permissions.spec.ts
@@ -586,6 +589,7 @@ tests/api/plugins/graphql/single-type.test.api.js
 tests/api/plugins/graphql/components.test.api.js
 tests/api/plugins/graphql/relations.test.api.js
 tests/api/plugins/graphql/dp-relations.test.api.js
+tests/api/plugins/graphql/cors.test.api.js
 tests/api/plugins/graphql/utils.test.api.js
 tests/api/plugins/i18n/graphql.test.api.js
 tests/api/plugins/i18n/content-api/content-types.test.api.js
@@ -931,8 +935,10 @@ packages/generators/generators/src/plops/policy.ts
 packages/generators/generators/src/plops/migration.ts
 packages/generators/generators/src/plops/middleware.ts
 packages/generators/generators/src/plops/api.ts
+packages/generators/generators/src/plops/utils/__tests__/extend-plugin-index.files.test.ts
 packages/generators/generators/src/plops/utils/__tests__/get-file-path.test.ts
 packages/generators/generators/src/plops/utils/get-formatted-date.ts
+packages/generators/generators/src/plops/utils/extend-plugin-index-files.ts
 packages/generators/generators/src/plops/utils/validate-attribute-input.ts
 packages/generators/generators/src/plops/utils/get-file-path.ts
 packages/generators/generators/src/plops/utils/validate-input.ts
@@ -945,6 +951,9 @@ packages/generators/generators/src/templates/js/single-type-routes.js.hbs
 packages/generators/generators/src/templates/js/migration.js.hbs
 packages/generators/generators/src/templates/js/collection-type-routes.js.hbs
 packages/generators/generators/src/templates/js/single-route.js.hbs
+packages/generators/generators/src/templates/js/plugin/plugin.routes.type.index.js.hbs
+packages/generators/generators/src/templates/js/plugin/plugin.routes.index.js.hbs
+packages/generators/generators/src/templates/js/plugin/plugin.index.js.hbs
 packages/generators/generators/src/templates/js/middleware.js.hbs
 packages/generators/generators/src/templates/js/service.js.hbs
 packages/generators/generators/src/templates/js/core-router.js.hbs
@@ -960,6 +969,9 @@ packages/generators/generators/src/templates/ts/single-route.ts.hbs
 packages/generators/generators/src/templates/ts/core-router.ts.hbs
 packages/generators/generators/src/templates/ts/core-controller.ts.hbs
 packages/generators/generators/src/templates/ts/core-service.ts.hbs
+packages/generators/generators/src/templates/ts/plugin/plugin.routes.index.ts.hbs
+packages/generators/generators/src/templates/ts/plugin/plugin.index.ts.hbs
+packages/generators/generators/src/templates/ts/plugin/plugin.routes.type.index.ts.hbs
 packages/generators/generators/src/templates/ts/service.ts.hbs
 packages/generators/generators/src/templates/ts/collection-type-routes.ts.hbs
 packages/generators/generators/src/templates/ts/middleware.ts.hbs
@@ -3206,6 +3218,7 @@ packages/core/content-manager/server/src/destroy.ts
 packages/core/content-manager/server/src/controllers/validation/dimensions.ts
 packages/core/content-manager/server/src/controllers/validation/index.ts
 packages/core/content-manager/server/src/controllers/validation/__tests__/dimensions.test.ts
+packages/core/content-manager/server/src/controllers/validation/__tests__/model-configuration.test.ts
 packages/core/content-manager/server/src/controllers/validation/relations.ts
 packages/core/content-manager/server/src/controllers/validation/model-configuration.ts
 packages/core/content-manager/server/src/controllers/init.ts
@@ -3684,6 +3697,7 @@ packages/core/admin/admin/src/hooks/tests/useAPIErrorHandler.test.ts
 packages/core/admin/admin/src/hooks/tests/usePersistentState.test.ts
 packages/core/admin/admin/src/hooks/tests/useAdminRoles.test.ts
 packages/core/admin/admin/src/hooks/tests/useClipboard.test.ts
+packages/core/admin/admin/src/hooks/tests/useWarnIfUnsavedChanges.test.ts
 packages/core/admin/admin/src/hooks/tests/useInjectReducer.test.tsx
 packages/core/admin/admin/src/hooks/tests/useRBAC.test.ts
 packages/core/admin/admin/src/hooks/tests/useFetchClient.test.tsx
@@ -3710,6 +3724,7 @@ packages/core/admin/admin/src/hooks/useLicenseLimitNotification.ts
 packages/core/admin/admin/src/hooks/useClipboard.ts
 packages/core/admin/admin/src/hooks/useDebounce.ts
 packages/core/admin/admin/src/hooks/useControllableState.ts
+packages/core/admin/admin/src/hooks/useWarnIfUnsavedChanges.ts
 packages/core/admin/admin/src/hooks/useFocusInputField.ts
 packages/core/admin/admin/src/hooks/useAdminRoles.ts
 packages/core/admin/admin/src/hooks/useElementOnScreen.ts

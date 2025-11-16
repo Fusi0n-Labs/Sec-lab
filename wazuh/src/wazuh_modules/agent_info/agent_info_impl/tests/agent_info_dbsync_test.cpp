@@ -117,7 +117,7 @@ TEST_F(AgentInfoDBSyncIntegrationTest, CallbacksAreOptional)
     EXPECT_NE(m_agentInfo, nullptr);
 
     // Should not crash when starting
-    EXPECT_NO_THROW(m_agentInfo->start(1, []()
+    EXPECT_NO_THROW(m_agentInfo->start(1, 86400, []()
     {
         return false;
     }));
@@ -143,7 +143,7 @@ TEST_F(AgentInfoDBSyncIntegrationTest, SetSyncParametersConfiguresValues)
     m_agentInfo = std::make_shared<AgentInfoImpl>(":memory:", nullptr, m_logFunc, m_queryModuleFunc, m_mockDBSync);
 
     // Set sync parameters
-    EXPECT_NO_THROW(m_agentInfo->setSyncParameters(60, 5, 1000));
+    EXPECT_NO_THROW(m_agentInfo->setSyncParameters(1, 60, 5, 1000));
 
     // Verify the log message contains the parameters
     EXPECT_THAT(m_logOutput, ::testing::HasSubstr("Sync parameters set"));
@@ -185,7 +185,7 @@ TEST_F(AgentInfoDBSyncIntegrationTest, LoadSyncFlagsWithException)
 
     // start() calls loadSyncFlags internally, which should catch the exception
     // Run for only one iteration to avoid timeout
-    m_agentInfo->start(1, []()
+    m_agentInfo->start(1, 86400, []()
     {
         return false;
     });
@@ -222,7 +222,7 @@ TEST_F(AgentInfoDBSyncIntegrationTest, LoadSyncFlagsCallbackWithData)
     m_agentInfo = std::make_shared<AgentInfoImpl>(
                       ":memory:", nullptr, m_logFunc, m_queryModuleFunc, mockDBSync);
 
-    m_agentInfo->start(1, []()
+    m_agentInfo->start(1, 86400, []()
     {
         return false;
     });

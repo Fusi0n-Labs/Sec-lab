@@ -15,25 +15,18 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <controls:WrapPanel Style="{StaticResource PageHeaderWrapPanelStyle}">
-
-                <TextBlock x:Uid="SettingsPageTitle" TextWrapping="WrapWholeWords" Style="{StaticResource BodyTextBlockStyle}" />
-
-            </controls:WrapPanel>
-
-            <customUI:InfoBarV2 Grid.Row="1"
-                                Margin="15"
+            <customUI:InfoBarV2 Grid.Row="0"
+                                Margin="0,0,0,5"
                                 IsOpen="{x:Bind ViewModel.MainInfoBarIsOpen, Mode=TwoWay}"
                                 Message="{x:Bind ViewModel.MainInfoBarMessage, Mode=OneWay}"
                                 Severity="{x:Bind ViewModel.MainInfoBarSeverity, Mode=OneWay}"
                                 IsClosable="{x:Bind ViewModel.MainInfoBarIsClosable, Mode=OneWay}"/>
 
             <StackPanel HorizontalAlignment="Stretch"
-                    Spacing="{StaticResource SettingsCardSpacing}" Grid.Row="2">
+                    Spacing="{StaticResource SettingsCardSpacing}" Grid.Row="1">
                 <win:StackPanel.ChildrenTransitions>
                     <win:EntranceThemeTransition FromVerticalOffset="50" />
                     <win:RepositionThemeTransition IsStaggeringEnabled="False" />

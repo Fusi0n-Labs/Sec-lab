@@ -111,7 +111,9 @@ void fim_initialize() {
     w_rwlock_init(&syscheck.directories_lock, NULL);
     w_mutex_init(&syscheck.fim_scan_mutex, NULL);
     w_mutex_init(&syscheck.fim_realtime_mutex, NULL);
-#ifndef WIN32
+#ifdef WIN32
+    w_mutex_init(&syscheck.fim_registry_scan_mutex, NULL)
+#else
     w_mutex_init(&syscheck.fim_symlink_mutex, NULL)
 #endif
 
@@ -122,7 +124,7 @@ void fim_initialize() {
         .send_binary = fim_send_binary_msg
     };
 
-    syscheck.sync_handle = asp_create("fim", FIM_SYNC_PROTOCOL_DB_PATH, &mq_funcs, loggingFunction);
+    syscheck.sync_handle = asp_create("fim", FIM_SYNC_PROTOCOL_DB_PATH, &mq_funcs, loggingFunction, syscheck.sync_end_delay, syscheck.sync_response_timeout, FIM_SYNC_RETRIES, syscheck.sync_max_eps);
     if (!syscheck.sync_handle) {
         merror_exit("Failed to initialize AgentSyncProtocol");
     }

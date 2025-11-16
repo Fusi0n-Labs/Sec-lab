@@ -17,7 +17,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -153,7 +152,7 @@ internal sealed class RegistryPolicyEntry(
 		};
 	}
 
-	private static string[] ParseMultiString(ReadOnlySpan<byte> data)
+	internal static string[] ParseMultiString(ReadOnlySpan<byte> data)
 	{
 		string unicodeString = Encoding.Unicode.GetString(data);
 		string[] strings = unicodeString.Split('\0', StringSplitOptions.RemoveEmptyEntries);
@@ -182,7 +181,7 @@ internal sealed class RegistryPolicyEntry(
 		if (!File.Exists(path))
 			throw new FileNotFoundException($"JSON file not found: {path}");
 
-		string json = File.ReadAllText(path);
+		byte[] json = File.ReadAllBytes(path);
 
 		return JsonSerializer.Deserialize(json, PolicyInputJsonContext.Default.ListRegistryPolicyEntry) ?? throw new InvalidOperationException($"Could not load the JSON file: {path}");
 	}
@@ -198,7 +197,7 @@ internal sealed class RegistryPolicyEntry(
 		if (!File.Exists(path))
 			throw new FileNotFoundException($"JSON file not found: {path}");
 
-		string json = File.ReadAllText(path);
+		byte[] json = File.ReadAllBytes(path);
 
 		List<RegistryPolicyEntry> result = JsonSerializer.Deserialize(json, PolicyInputJsonContext.Default.ListRegistryPolicyEntry) ?? throw new InvalidOperationException($"Could not load the JSON file: {path}");
 
@@ -212,12 +211,5 @@ internal sealed class RegistryPolicyEntry(
 		}
 
 		return result;
-	}
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	internal static bool HasAlternateVerification(RegistryPolicyEntry item, string KeyName, string ValueName)
-	{
-		return string.Equals(item.KeyName, KeyName, StringComparison.OrdinalIgnoreCase) &&
-			string.Equals(item.ValueName, ValueName, StringComparison.OrdinalIgnoreCase);
 	}
 }

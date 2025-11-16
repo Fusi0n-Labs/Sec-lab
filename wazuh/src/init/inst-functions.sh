@@ -139,19 +139,6 @@ WriteConfigurationAssessment()
 }
 
 ##########
-# WriteAgentInfo()
-##########
-WriteAgentInfo()
-{
-    # Adding to the config file
-    AGENT_INFO_TEMPLATE=$(GetTemplate "wodle-agent-info.template" ${DIST_NAME} ${DIST_VER} ${DIST_SUBVER})
-    if [ ! "$AGENT_INFO_TEMPLATE" = "ERROR_NOT_FOUND" ]; then
-      cat ${AGENT_INFO_TEMPLATE} >> $NEWCONFIG
-      echo "" >> $NEWCONFIG
-    fi
-}
-
-##########
 # InstallSecurityConfigurationAssessmentFiles()
 ##########
 InstallSecurityConfigurationAssessmentFiles()
@@ -383,9 +370,6 @@ WriteAgent()
     # Configuration assessment configuration
     WriteConfigurationAssessment
 
-    # Agent info configuration
-    WriteAgentInfo
-
     # Syscheck
     WriteSyscheck "agent"
 
@@ -482,9 +466,6 @@ WriteManager()
 
     # Configuration assessment
     WriteConfigurationAssessment
-
-    # Agent info configuration
-    WriteAgentInfo
 
     # Vulnerability Detector
     cat ${VULN_TEMPLATE} >> $NEWCONFIG
@@ -786,6 +767,11 @@ InstallCommon()
             ${INSTALL} -m 0750 -o root -g 0 syscheckd/build/lib/libfimdb.dylib ${INSTALLDIR}/lib
             install_name_tool -id @rpath/../lib/libfimdb.dylib ${INSTALLDIR}/lib/libfimdb.dylib
         fi
+        if [ -f syscheckd/build/lib/libfim_recovery.dylib ]
+        then
+            ${INSTALL} -m 0750 -o root -g 0 syscheckd/build/lib/libfim_recovery.dylib ${INSTALLDIR}/lib
+            install_name_tool -id @rpath/../lib/libfim_recovery.dylib ${INSTALLDIR}/lib/libfim_recovery.dylib
+        fi
     elif [ -f syscheckd/build/lib/libfimdb.so ]
     then
         ${INSTALL} -m 0750 -o root -g ${WAZUH_GROUP} syscheckd/build/lib/libfimdb.so ${INSTALLDIR}/lib
@@ -804,6 +790,15 @@ InstallCommon()
        		if ([ "X${DIST_NAME}" = "Xrhel" ] || [ "X${DIST_NAME}" = "Xcentos" ] || [ "X${DIST_NAME}" = "XCentOS" ]) && [ ${DIST_VER} -le 5 ]; then
        		    chcon -t textrel_shlib_t ${INSTALLDIR}/lib/libfimebpf.so
        		fi
+      fi
+
+      if [ -f syscheckd/build/lib/libfim_recovery.so ]
+      then
+          ${INSTALL} -m 0750 -o root -g ${WAZUH_GROUP} syscheckd/build/lib/libfim_recovery.so ${INSTALLDIR}/lib
+
+          if ([ "X${DIST_NAME}" = "Xrhel" ] || [ "X${DIST_NAME}" = "Xcentos" ] || [ "X${DIST_NAME}" = "XCentOS" ]) && [ ${DIST_VER} -le 5 ]; then
+              chcon -t textrel_shlib_t ${INSTALLDIR}/lib/libfim_recovery.so
+          fi
       fi
 
       if [ -f external/libbpf-bootstrap/build/libbpf/libbpf.so ]
@@ -1079,7 +1074,6 @@ InstallLocal()
 
     ${INSTALL} -m 0750 -o root -g 0 wazuh-monitord ${INSTALLDIR}/bin
     ${INSTALL} -m 0750 -o root -g ${WAZUH_GROUP} verify-agent-conf ${INSTALLDIR}/bin/
-    ${INSTALL} -m 0750 -o root -g 0 agent_control ${INSTALLDIR}/bin/
     ${INSTALL} -m 0750 -o root -g 0 wazuh-db ${INSTALLDIR}/bin/
     ${INSTALL} -m 0750 -o root -g 0 build/engine/wazuh-engine ${INSTALLDIR}/bin/wazuh-analysisd
 

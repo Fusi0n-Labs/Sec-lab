@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
     <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
         <xsd:element name="root" msdata:IsDataSet="true">
@@ -890,7 +890,7 @@
     <value>Set the behavior of the elevation prompt for administrators in Enhanced Privilege Protection Mode: Prompt for Credentials on the Secure Desktop</value>
   </data>
     <data name="TypeOfAdminApprovalMode-UAC" xml:space="preserve">
-    <value>Set the type of Admin Approval Mode to be Admin Approval Mode with enhanced privilege protection</value>
+    <value>Administrator Protection: Set the type of Admin Approval Mode to be Admin Approval Mode with enhanced privilege protection</value>
   </data>
   <data name="AllowedExactPathsMachine-WindowsNetworking" xml:space="preserve">
     <value>Remove remotely accessible registry paths.</value>
@@ -951,5 +951,8 @@
 </data>
 <data name="ACConnectivityInStandby_BitLocker" xml:space="preserve">
     <value>Allow network connectivity during connected-modern-standby (only when plugged in)</value>
+</data>
+<data name="Remediation_BNB_BFP_BruteForceProtection_MaxBlockTime-MSDefender" xml:space="preserve">
+    <value>Set the maximum time an IP address is blocked by Brute-Force Protection to the maximum possible value. After this time, blocked IP addresses will be able to sign-in and initiate sessions.</value>
 </data>
 </root>

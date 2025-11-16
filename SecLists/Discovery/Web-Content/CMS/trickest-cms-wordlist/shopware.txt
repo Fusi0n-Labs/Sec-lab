@@ -951,6 +951,7 @@ tests/unit/Core/Framework/DataAbstractionLayer/FieldSerializer/UpdatedByFieldSer
 tests/unit/Core/Framework/DataAbstractionLayer/FieldSerializer/PriceFieldSerializerTest.php
 tests/unit/Core/Framework/DataAbstractionLayer/FieldSerializer/DateIntervalFieldSerializerTest.php
 tests/unit/Core/Framework/JWT/JWTDecoderTest.php
+tests/unit/Core/Framework/JWT/SalesChannel/JWTGeneratorTest.php
 tests/unit/Core/Framework/JWT/_fixtures/valid-jwks.json
 tests/unit/Core/Framework/JWT/_fixtures/valid-jwt.txt
 tests/unit/Core/Framework/JWT/_fixtures/public.pem
@@ -2232,8 +2233,14 @@ tests/unit/Storefront/Page/Product/ProductPageLoaderTest.php
 tests/unit/Storefront/Page/LandingPage/LandingPageTest.php
 tests/unit/Storefront/Page/LandingPage/LandingPageLoaderTest.php
 tests/unit/Storefront/Page/LandingPage/LandingPageLoadedHookTest.php
+tests/unit/Storefront/Page/Robots/RobotsConfigChangeSubscriberTest.php
 tests/unit/Storefront/Page/Robots/RobotsPageLoaderTest.php
+tests/unit/Storefront/Page/Robots/Struct/RobotsDirectiveTest.php
 tests/unit/Storefront/Page/Robots/Struct/DomainRuleStructTest.php
+tests/unit/Storefront/Page/Robots/Struct/RobotsUserAgentBlockTest.php
+tests/unit/Storefront/Page/Robots/Event/RobotsDirectiveParsingEventTest.php
+tests/unit/Storefront/Page/Robots/Parser/ParsedRobotsTest.php
+tests/unit/Storefront/Page/Robots/Parser/RobotsDirectiveParserTest.php
 tests/unit/Storefront/Page/GenericPageLoaderTest.php
 tests/unit/Storefront/Page/GuestWishlistPageletTest.php
 tests/unit/Storefront/Page/Cms/CmsPageLoadedHookTest.php
@@ -3524,7 +3531,6 @@ tests/integration/Core/Framework/Store/Api/FirstRunWizardControllerTest.php
 tests/integration/Core/Framework/Store/Api/StoreControllerTest.php
 tests/integration/Core/Checkout/Customer/Repository/CustomerTagTest.php
 tests/integration/Core/Checkout/Customer/Repository/CustomerRepositoryTest.php
-tests/integration/Core/Checkout/Customer/Subscriber/CustomerGroupSubscriberTest.php
 tests/integration/Core/Checkout/Customer/Subscriber/CustomerBeforeDeleteSubscriberTest.php
 tests/integration/Core/Checkout/Customer/Subscriber/ProductReviewSubscriberTest.php
 tests/integration/Core/Checkout/Customer/Subscriber/CustomerChangePasswordSubscriberTest.php
@@ -3934,6 +3940,7 @@ tests/integration/Storefront/Framework/Captcha/CaptchaRouteListenerTest.php
 tests/integration/Storefront/Framework/Captcha/BasicCaptchaTest.php
 tests/integration/Storefront/Framework/Captcha/BasicCaptcha/BasicCaptchaGeneratorTest.php
 tests/integration/Storefront/Integration/ProductVisibilityTest.php
+tests/integration/Storefront/Checkout/Customer/CustomerGroupSubscriberTest.php
 tests/devops/Core/Test/DataAbstractionLayerValidateCommandTest.php
 tests/devops/Core/Test/AnnotationTagTest.php
 tests/devops/Core/DefaultsTest.php
@@ -18245,6 +18252,8 @@ src/Core/Framework/DataAbstractionLayer/FieldSerializer/FloatFieldSerializer.php
 src/Core/Framework/DataAbstractionLayer/FieldSerializer/FkFieldSerializer.php
 src/Core/Framework/DataAbstractionLayer/FieldSerializer/EnumFieldSerializer.php
 src/Core/Framework/JWT/JWTDecoder.php
+src/Core/Framework/JWT/SalesChannel/JWTGenerator.php
+src/Core/Framework/JWT/Struct/JWTStruct.php
 src/Core/Framework/JWT/Struct/JWKCollection.php
 src/Core/Framework/JWT/Struct/JWKStruct.php
 src/Core/Framework/JWT/Constraints/HasValidRSAJWKSignature.php
@@ -19956,7 +19965,6 @@ src/Core/Checkout/Customer/Subscriber/CustomerTokenSubscriber.php
 src/Core/Checkout/Customer/Subscriber/CustomerSalutationSubscriber.php
 src/Core/Checkout/Customer/Subscriber/CustomerRemoteAddressSubscriber.php
 src/Core/Checkout/Customer/Subscriber/CustomerBeforeDeleteSubscriber.php
-src/Core/Checkout/Customer/Subscriber/CustomerGroupSubscriber.php
 src/Core/Checkout/Customer/Subscriber/CustomerChangePasswordSubscriber.php
 src/Core/Checkout/Customer/DeleteUnusedGuestCustomerHandler.php
 src/Core/Checkout/Customer/Exception/CannotDeleteDefaultAddressException.php
@@ -20048,6 +20056,7 @@ src/Core/Checkout/Customer/SalesChannel/ChangeCustomerProfileRoute.php
 src/Core/Checkout/Customer/SalesChannel/AbstractChangePasswordRoute.php
 src/Core/Checkout/Customer/SalesChannel/SendPasswordRecoveryMailRoute.php
 src/Core/Checkout/Customer/SalesChannel/AbstractCustomerGroupRegistrationSettingsRoute.php
+src/Core/Checkout/Customer/Struct/ImitateCustomerToken.php
 src/Core/Checkout/Customer/Password/LegacyPasswordVerifier.php
 src/Core/Checkout/Customer/Password/LegacyEncoder/Sha256.php
 src/Core/Checkout/Customer/Password/LegacyEncoder/LegacyEncoderInterface.php
@@ -20384,6 +20393,7 @@ src/Core/Checkout/Cart/Address/Error/CountryRegionMissingError.php
 src/Core/Checkout/Cart/Address/Error/BillingAddressCountryRegionMissingError.php
 src/Core/Checkout/Cart/Address/Error/SalutationMissingError.php
 src/Core/Checkout/Cart/Address/Error/ShippingAddressCountryRegionMissingError.php
+src/Core/Checkout/Cart/Address/Error/AddressErrorInterface.php
 src/Core/Checkout/Cart/Address/Error/BillingAddressSalutationMissingError.php
 src/Core/Checkout/Cart/Address/AddressValidator.php
 src/Core/Checkout/Cart/Command/CartMigrateCommand.php
@@ -21063,9 +21073,19 @@ src/Storefront/Page/Sitemap/SitemapPageLoadedEvent.php
 src/Storefront/Page/Sitemap/SitemapPageLoader.php
 src/Storefront/Page/Sitemap/SitemapPageLoadedHook.php
 src/Storefront/Page/Robots/RobotsPageLoadedEvent.php
+src/Storefront/Page/Robots/RobotsConfigChangeSubscriber.php
 src/Storefront/Page/Robots/Struct/DomainRuleCollection.php
+src/Storefront/Page/Robots/Struct/RobotsDirective.php
 src/Storefront/Page/Robots/Struct/DomainRuleStruct.php
+src/Storefront/Page/Robots/Struct/RobotsDirectiveType.php
+src/Storefront/Page/Robots/Struct/RobotsUserAgentBlock.php
 src/Storefront/Page/Robots/RobotsPage.php
+src/Storefront/Page/Robots/Event/RobotsDirectiveParsingEvent.php
+src/Storefront/Page/Robots/Event/RobotsUnknownDirectiveEvent.php
+src/Storefront/Page/Robots/Parser/ParsedRobots.php
+src/Storefront/Page/Robots/Parser/ParseIssue.php
+src/Storefront/Page/Robots/Parser/ParseIssueSeverity.php
+src/Storefront/Page/Robots/Parser/RobotsDirectiveParser.php
 src/Storefront/Page/Robots/RobotsPageLoader.php
 src/Storefront/Page/PageLoadedHook.php
 src/Storefront/Page/GenericPageLoaderInterface.php
@@ -22419,6 +22439,7 @@ src/Storefront/Framework/Captcha/BasicCaptcha/BasicCaptchaImage.php
 src/Storefront/Framework/Captcha/BasicCaptcha/AbstractBasicCaptchaGenerator.php
 src/Storefront/Framework/Captcha/BasicCaptcha/BasicCaptchaGenerator.php
 src/Storefront/Storefront.php
+src/Storefront/Checkout/Customer/CustomerGroupSubscriber.php
 src/Storefront/Checkout/Cart/Error/ShippingMethodChangedError.php
 src/Storefront/Checkout/Cart/Error/PaymentMethodChangedError.php
 src/Storefront/Checkout/Cart/SalesChannel/StorefrontCartFacade.php

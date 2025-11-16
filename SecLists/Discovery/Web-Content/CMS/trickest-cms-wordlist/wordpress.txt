@@ -15,6 +15,7 @@ wp-admin/images/freedom-4.svg
 wp-admin/images/dashboard-background.svg
 wp-admin/images/contribute-no-code.svg
 wp-admin/images/privacy.svg
+wp-admin/images/about-release-logo.svg
 wp-admin/images/wordpress-logo.svg
 wp-admin/link.php
 wp-admin/theme-editor.php
@@ -1648,7 +1649,6 @@ wp-includes/rest-api/fields/class-wp-rest-user-meta-fields.php
 wp-includes/rest-api/fields/class-wp-rest-term-meta-fields.php
 wp-includes/rest-api/class-wp-rest-response.php
 wp-includes/rest-api/class-wp-rest-server.php
-wp-includes/rest-api/endpoints/class-wp-rest-registered-templates-controller.php
 wp-includes/rest-api/endpoints/class-wp-rest-font-faces-controller.php
 wp-includes/rest-api/endpoints/class-wp-rest-controller.php
 wp-includes/rest-api/endpoints/class-wp-rest-abilities-v1-list-controller.php

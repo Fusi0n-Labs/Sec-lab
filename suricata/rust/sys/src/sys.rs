@@ -178,6 +178,9 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    pub fn SCSigTableHasKeyword(keyword: *const ::std::os::raw::c_char) -> bool;
+}
+extern "C" {
     pub fn SCDetectHelperKeywordSetCleanCString(id: u16);
 }
 #[repr(C)]
@@ -1030,4 +1033,22 @@ extern "C" {
 }
 extern "C" {
     pub fn SCSRepCatGetByShortname(shortname: *const ::std::os::raw::c_char) -> u8;
+}
+extern "C" {
+    pub fn SCRequiresFeature(arg1: *const ::std::os::raw::c_char) -> bool;
+}
+pub type DataRepType = u16;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Dataset {
+    _unused: [u8; 0],
+}
+extern "C" {
+    pub fn SCDatasetAdd(set: *mut Dataset, data: *const u8, data_len: u32)
+        -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn SCDatasetAddwRep(
+        set: *mut Dataset, data: *const u8, data_len: u32, rep: *const DataRepType,
+    ) -> ::std::os::raw::c_int;
 }

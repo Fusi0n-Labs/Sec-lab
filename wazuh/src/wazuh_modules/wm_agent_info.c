@@ -52,6 +52,7 @@
 
 // XML configuration constants
 static const char* XML_INTERVAL = "interval";
+static const char* XML_INTEGRITY_INTERVAL = "integrity_interval";
 static const char* XML_SYNC = "synchronization";
 
 // Type definitions
@@ -102,6 +103,7 @@ const wm_context WM_AGENT_INFO_CONTEXT = {.name = AGENT_INFO_WM_NAME,
 static void wm_agent_info_parse_synchronization(wm_agent_info_t* agent_info, xml_node** node)
 {
     const char* XML_DB_SYNC_ENABLED = "enabled";
+    const char* XML_DB_SYNC_END_DELAY = "sync_end_delay";
     const char* XML_DB_SYNC_RESPONSE_TIMEOUT = "response_timeout";
     const char* XML_DB_SYNC_RETRIES = "retries";
     const char* XML_DB_SYNC_MAX_EPS = "max_eps";
@@ -119,6 +121,19 @@ static void wm_agent_info_parse_synchronization(wm_agent_info_t* agent_info, xml
             else
             {
                 agent_info->sync.enable_synchronization = r;
+            }
+        }
+        else if (strcmp(node[i]->element, XML_DB_SYNC_END_DELAY) == 0)
+        {
+            long sync_end_delay = w_parse_time(node[i]->content);
+
+            if (sync_end_delay < 0)
+            {
+                mwarn(XML_VALUEERR, node[i]->element, node[i]->content);
+            }
+            else
+            {
+                agent_info->sync.sync_end_delay = (uint32_t)sync_end_delay;
             }
         }
         else if (strcmp(node[i]->element, XML_DB_SYNC_RESPONSE_TIMEOUT) == 0)
@@ -311,10 +326,12 @@ int wm_agent_info_read(__attribute__((unused)) const OS_XML* xml, xml_node** nod
     }
 
     // Set default configuration values
-    agent_info->interval = 60;
+    agent_info->interval = 60;  // Delta updates every 60 seconds
+    agent_info->integrity_interval = 86400;  // Integrity check every 24 hours (86400 seconds)
 
     // Database synchronization config values
     agent_info->sync.enable_synchronization = 1;
+    agent_info->sync.sync_end_delay = 1;
     agent_info->sync.sync_response_timeout = 60;
     agent_info->sync.sync_retries = 3;
     agent_info->sync.sync_max_eps = 10;
@@ -355,6 +372,22 @@ int wm_agent_info_read(__attribute__((unused)) const OS_XML* xml, xml_node** nod
             else
             {
                 agent_info->interval = value;
+            }
+        }
+        else if (!strcmp(nodes[i]->element, XML_INTEGRITY_INTERVAL))
+        {
+            char* end;
+            long value = strtol(nodes[i]->content, &end, 10);
+
+            if (value < 60 || value > 7 * DAY_SEC || *end)
+            {
+                mwarn("Invalid integrity_interval time at module '%s'. Value must be between 60 (1 minute) and %d (7 days).",
+                      WM_AGENT_INFO_CONTEXT.name,
+                      7 * DAY_SEC);
+            }
+            else
+            {
+                agent_info->integrity_interval = value;
             }
         }
         else if (!strcmp(nodes[i]->element, XML_SYNC))
@@ -536,10 +569,12 @@ cJSON* wm_agent_info_dump(const wm_agent_info_t* agent_info)
     if (agent_info)
     {
         cJSON_AddNumberToObject(wm_agent_info, "interval", agent_info->interval);
+        cJSON_AddNumberToObject(wm_agent_info, "integrity_interval", agent_info->integrity_interval);
 
         // Database synchronization values
         cJSON* synchronization = cJSON_CreateObject();
         cJSON_AddStringToObject(synchronization, "enabled", agent_info->sync.enable_synchronization ? "yes" : "no");
+        cJSON_AddNumberToObject(synchronization, "sync_end_delay", agent_info->sync.sync_end_delay);
         cJSON_AddNumberToObject(synchronization, "response_timeout", agent_info->sync.sync_response_timeout);
         cJSON_AddNumberToObject(synchronization, "retries", agent_info->sync.sync_retries);
         cJSON_AddNumberToObject(synchronization, "max_eps", agent_info->sync.sync_max_eps);
